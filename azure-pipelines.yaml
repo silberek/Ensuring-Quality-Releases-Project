@@ -6,14 +6,14 @@ stages:
   jobs:
   - job: Build
     pool:
-      name: Hosted Ubuntu 1604
+      name: Hosted Ubuntu 1804
     steps:
-    # Needed for Terraform VM deployment
-    # - task: InstallSSHKey@0
-    #   inputs:
-    #     knownHostsEntry: 'KNOWN_HOSTS_STRING'
-    #     sshPublicKey: 'PUBLIC_KEY'
-    #     sshKeySecureFile: 'id_rsa'
+    #  Needed for Terraform VM deployment
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+        sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVUp7/l4VKqd+fJu9Lbj0SDqFLypieivh4fV94VjxWtRlAO6yKfF914LV/nvYA5mp+pdGfo6T/w4udZh7skQ6v2MV6Ooqxf8ZFmRbslb1Adl0dgQBEQh1G/6aonl+zECg4+0lon5dl4DUtrSPuXy2T0C+SfXNTJb3N5TVxiuyp7t/jJZmu1b+oOl5g1ZT8gULyCvBAgIifO4JmzV/G3SdWMsQ8pN+C2os1Fnpme7qA6pvhU3U9Z+CdqQT9UmxlqiJUFK3qVSLcfKu0bXMYMgcH4DCUXrPDpFwe5+rnY8avWBTznT+VVuYGCKU8/dHKEWc5SI31rNAVgRg8W6szmt/B malgorzata@cc-6822e742-66fb55bf7b-65hl6'
+        sshKeySecureFile: 'id_rsa'
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
@@ -28,7 +28,7 @@ stages:
   jobs:
   - deployment: FakeRestAPI
     pool:
-      vmImage: 'Ubuntu-16.04'
+      vmImage: 'Ubuntu-18.04'
     environment: 'TEST'
     strategy:
       runOnce:
@@ -37,8 +37,8 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: ''
-              appName: ''
+              azureSubscription: 'Ensuring Quality Releases Project'
+              appName: 'kulfon'
               appType: webApp
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
   # - deployment: VMDeploy
