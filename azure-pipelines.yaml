@@ -4,7 +4,7 @@ variables:
   serviceConnections: 'Ensuring Quality Releases Project'
 
 stages:
-- stage: Infrastructure provision
+- stage: InfrastructureProvision
   jobs:
   - job: TerraformTasks
     displayName: Terraform
@@ -13,7 +13,7 @@ stages:
 
     steps:
       - task: DownloadSecureFile@1
-        name: Downloading terraform.tfvars
+        name: Downloading_terraform_tfvars
         displayName: Download terraform.tfvars
         inputs:
           secureFile: 'terraform.tfvars'
@@ -156,7 +156,7 @@ stages:
                 pip3 install selenium
 #                export PATH=$PATH:some/path
 
-- stage: Test
+# - stage: Test
 
 
 
