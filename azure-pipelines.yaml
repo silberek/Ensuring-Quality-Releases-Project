@@ -1,67 +1,171 @@
 name: Azure Pipelines
 variables:
   python.version: '3.7.6'
+  serviceConnections: 'Ensuring Quality Releases Project'
+
 stages:
+- stage: Infrastructure provision
+  jobs:
+  - job: TerraformTasks
+    displayName: Terraform
+    pool:
+      vmImage: 'ubuntu-18.04'
+
+    steps:
+      - task: DownloadSecureFile@1
+        name: Downloading terraform.tfvars
+        displayName: Download terraform.tfvars
+        inputs:
+          secureFile: 'terraform.tfvars'
+
+      # SSH Key for Terraform VM deployment
+      - task: InstallSSHKey@0
+        displayName: Installing SSH key
+        inputs:
+          knownHostsEntry: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+          sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVUp7/l4VKqd+fJu9Lbj0SDqFLypieivh4fV94VjxWtRlAO6yKfF914LV/nvYA5mp+pdGfo6T/w4udZh7skQ6v2MV6Ooqxf8ZFmRbslb1Adl0dgQBEQh1G/6aonl+zECg4+0lon5dl4DUtrSPuXy2T0C+SfXNTJb3N5TVxiuyp7t/jJZmu1b+oOl5g1ZT8gULyCvBAgIifO4JmzV/G3SdWMsQ8pN+C2os1Fnpme7qA6pvhU3U9Z+CdqQT9UmxlqiJUFK3qVSLcfKu0bXMYMgcH4DCUXrPDpFwe5+rnY8avWBTznT+VVuYGCKU8/dHKEWc5SI31rNAVgRg8W6szmt/B malgorzata@cc-6822e742-66fb55bf7b-65hl6'
+          sshKeySecureFile: 'id_rsa'
+
+      # Run bash script
+      - task: Bash@3
+        displayName: Copy terraform.tfvars
+        inputs:
+          targetType: 'inline'
+          script: cp $(Agent.TempDirectory)/terraform.tfvars $(System.DefaultWorkingDirectory)/terraform
+
+      #Terraform Install
+      - task: TerraformInstaller@0
+        displayName: Install Terraform
+        inputs:
+          terraformVersion: '1.2.1'
+
+      #Terraform Init
+      - task: TerraformTaskV1@0
+        displayName: Terraform Init
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: $(serviceConnections)
+          backendAzureRmResourceGroupName: 'tstate'
+          backendAzureRmStorageAccountName: 'tstate27459'
+          backendAzureRmContainerName: 'tstate'
+          backendAzureRmKey: 'terraform.tfstate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+
+#      - task: TerraformTaskV1@0
+#        displayName: Terraform Validate
+#        inputs:
+#          provider: 'azurerm'
+#          command: 'validate'
+#          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+#          environmentServiceNameAzureRM: $(serviceConnections)
+
+      # Terraform plan
+      - task: TerraformTaskV1@0
+        displayName: Terraform Plan
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+          environmentServiceNameAzureRM: $(serviceConnections)
+
+      # Terraform apply
+      - task: TerraformTaskV1@0
+        displayName: Terraform Apply
+        inputs:
+          provider: 'azurerm'
+          command: 'apply'
+          commandOptions: |
+            -auto-approve
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+          environmentServiceNameAzureRM: 'Ensuring Quality Releases Project'
+
 - stage: Build
   jobs:
   - job: Build
     pool:
       name: Hosted Ubuntu 1804
     steps:
-    #  Needed for Terraform VM deployment
-    - task: InstallSSHKey@0
-      inputs:
-        knownHostsEntry: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-        sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVUp7/l4VKqd+fJu9Lbj0SDqFLypieivh4fV94VjxWtRlAO6yKfF914LV/nvYA5mp+pdGfo6T/w4udZh7skQ6v2MV6Ooqxf8ZFmRbslb1Adl0dgQBEQh1G/6aonl+zECg4+0lon5dl4DUtrSPuXy2T0C+SfXNTJb3N5TVxiuyp7t/jJZmu1b+oOl5g1ZT8gULyCvBAgIifO4JmzV/G3SdWMsQ8pN+C2os1Fnpme7qA6pvhU3U9Z+CdqQT9UmxlqiJUFK3qVSLcfKu0bXMYMgcH4DCUXrPDpFwe5+rnY8avWBTznT+VVuYGCKU8/dHKEWc5SI31rNAVgRg8W6szmt/B malgorzata@cc-6822e742-66fb55bf7b-65hl6'
-        sshKeySecureFile: 'id_rsa'
+ #   #  Needed for Terraform VM deployment
+ #   - task: InstallSSHKey@0
+ #     inputs:
+ #       knownHostsEntry: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+ #       sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVUp7/l4VKqd+fJu9Lbj0SDqFLypieivh4fV94VjxWtRlAO6yKfF914LV/nvYA5mp+pdGfo6T/w4udZh7skQ6v2MV6Ooqxf8ZFmRbslb1Adl0dgQBEQh1G/6aonl+zECg4+0lon5dl4DUtrSPuXy2T0C+SfXNTJb3N5TVxiuyp7t/jJZmu1b+oOl5g1ZT8gULyCvBAgIifO4JmzV/G3SdWMsQ8pN+C2os1Fnpme7qA6pvhU3U9Z+CdqQT9UmxlqiJUFK3qVSLcfKu0bXMYMgcH4DCUXrPDpFwe5+rnY8avWBTznT+VVuYGCKU8/dHKEWc5SI31rNAVgRg8W6szmt/B malgorzata@cc-6822e742-66fb55bf7b-65hl6'
+ #       sshKeySecureFile: 'id_rsa'
+
     - task: ArchiveFiles@2
       displayName: 'Archive FakeRestAPI'
       inputs:
-        rootFolderOrFile: 'path/to/fakerestapi'
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/fakerestapi'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip'
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-fakerestapi.zip
       displayName: 'Upload Package'
       artifact: drop-fakerestapi
-- stage:
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive Selenium'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/automatedtesting/selenium'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip'
+    - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-selenium-tests.zip
+      displayName: 'Upload Package'
+      artifact: drop-selenium-tests
+
+- stage: Deployment
   jobs:
   - deployment: FakeRestAPI
+    displayName: Deploying FakeRestAPI
     pool:
-      vmImage: 'Ubuntu-18.04'
+      vmImage: 'ubuntu-18.04'
     environment: 'TEST'
     strategy:
       runOnce:
         deploy:
           steps:
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App'
             inputs:
-              azureSubscription: 'Ensuring Quality Releases Project'
-              appName: 'kulfon'
+              azureSubscription: 'Azure subscription 1'
               appType: webApp
+              WebAppName: 'kulfon'
               package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
-  # - deployment: VMDeploy
-  #   displayName: NAME
-  #   environment:
-  #     name:  ENVIRONMENT NAME
-  #     resourceType: VirtualMachine
-  #     tags: TAG NAME
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #         - task: Bash@3
-  #           inputs:
-  #             targetType: 'inline'
-  #             script: |
-  #               #! /bin/bash
-                
-  #               sudo apt-get upgrade -y
-  #               sudo apt-get install python3-pip -y
-  #               sudo apt-get install unzip -y
-  #               sudo apt-get install -y chromium-browser
-  #               pip3 install selenium
-  #               export PATH=$PATH:some/path
+              deploymentMethod: 'auto'
+
+  - deployment: VMDeploy
+    displayName: Deploy VM
+    environment:
+      name:  'TEST'
+      resourceType: VirtualMachine
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+              
+                sudo apt-get upgrade -y
+                sudo apt-get install python3-pip -y
+                sudo apt-get install unzip -y
+                sudo apt-get install -y chromium-browser
+                pip3 install selenium
+#                export PATH=$PATH:some/path
+
+- stage: Test
+
+
+
+
+
+
+
+
+
+
 
 
