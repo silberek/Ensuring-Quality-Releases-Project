@@ -20,4 +20,3 @@ variable "packer_image" {}
 
 
 variable "public_key_path" {}
-}
