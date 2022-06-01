@@ -1,11 +1,17 @@
 provider "azurerm" {
-  tenant_id       = "${var.tenant_id}"
-  subscription_id = "${var.subscription_id}"
-  client_id       = "${var.client_id}"
-  client_secret   = "${var.client_secret}"
+  tenant_id       = var.tenant_id
+  subscription_id = var.subscription_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
   features {}
 }
 terraform {
+  required_providers {
+    azurerm = {
+      source = 'hashicorp/azurerm'
+      version = '2.50.0'
+    }
+  }
   backend "azurerm" {
     storage_account_name = "tstate27459"
     container_name       = "tstate"
@@ -51,4 +57,14 @@ module "publicip" {
   application_type = "${var.application_type}"
   resource_type    = "publicip"
   resource_group   = "${module.resource_group.resource_group_name}"
+}
+module "vm" {
+  source          = "./modules/vm"
+  name            = "vm-for-test"
+  location        = "${var.location}"
+  subnet_id       = module.network.subnet_id_test
+  resource_group  = module.resource_group.resource_group_name
+  public_ip       = module.publicip.public_ip_address_id
+  admin_username  = "${var.admin_username}"
+  packer_image    = "${var.packer_image}"
 }
