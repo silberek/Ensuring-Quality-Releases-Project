@@ -1,10 +1,11 @@
 provider "azurerm" {
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
+  tenant_id       = "${var.tenant_id}"
+  subscription_id = "${var.subscription_id}"
+  client_id       = "${var.client_id}"
+  client_secret   = "${var.client_secret}"
   features {}
 }
+
 terraform {
   required_providers {
     azurerm = {
@@ -31,7 +32,7 @@ module "network" {
   virtual_network_name = "${var.virtual_network_name}"
   application_type     = "${var.application_type}"
   resource_type        = "NET"
-  resource_group       = "${module.resource_group.resource_group_name}"
+  resource_group       = "${var.resource_group}"
   address_prefix_test  = "${var.address_prefix_test}"
 }
 
@@ -40,8 +41,8 @@ module "nsg-test" {
   location         = "${var.location}"
   application_type = "${var.application_type}"
   resource_type    = "NSG"
-  resource_group   = "${module.resource_group.resource_group_name}"
-  subnet_id        = "${module.network.subnet_id_test}"
+  resource_group   = "${var.resource_group}"
+  subnet_id        = "${module.network.subnet_id}"
   address_prefix_test = "${var.address_prefix_test}"
 }
 module "appservice" {
@@ -49,23 +50,25 @@ module "appservice" {
   location         = "${var.location}"
   application_type = "${var.application_type}"
   resource_type    = "AppService"
-  resource_group   = "${module.resource_group.resource_group_name}"
+  resource_group   = "${var.resource_group}"
 }
 module "publicip" {
   source           = "./modules/publicip"
   location         = "${var.location}"
   application_type = "${var.application_type}"
-  resource_type    = "publicip"
-  resource_group   = "${module.resource_group.resource_group_name}"
+  resource_type    = "PublicIp"
+  resource_group   = "${var.resource_group}"
 }
 module "vm" {
-  source          = "./modules/vm"
-  name            = "vm-for-test"
-  location        = "${var.location}"
-  subnet_id       = module.network.subnet_id_test
-  resource_group  = module.resource_group.resource_group_name
-  public_ip       = module.publicip.public_ip_address_id
-  admin_username  = "${var.admin_username}"
-  packer_image    = var.packer_image
-  public_key_path = var.public_key_path
+  source               = "./modules/vm"
+  name                 = "vm-for-test"
+  location             = "${var.location}"
+  packer_image         = "${var.packer_image}"
+  public_key_path      = "${var.public_key_path}"
+  application_type     = "${var.application_type}"
+  resource_group       = "${var.resource_group}"
+  public_ip_address_id = "${module.publicip.public_ip_address_id}"
+  subnet_id            = "${module.network.subnet_id}"
+  admin_username       = "${var.admin_username}"
+  admin_password       = "${var.admin_password}"
 }
