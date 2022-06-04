@@ -149,23 +149,105 @@ stages:
               script: |
                 #! /bin/bash
               
+                sudo apt-get install software-properties-common -y
+                sudo apt-add-repository universe -y
                 sudo apt-get upgrade -y
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
+                sudo apt-get install -y chromium-chromedriver
                 pip3 install selenium
 #                export PATH=$PATH:some/path
 
-# - stage: Test
+- stage: Test
+  jobs:
+    - job: IntegrationTest
+      steps:
+      - task: NodeTool@0
+        displayName: Install Node v16.X
+        inputs:
+          versionSpec: '16.x'
+      - bash: |
+          npm install -g newman
+          mkdir -p log/newman
+        displayName: Install Newman
+      - bash: |
+          newman run automatedtesting/postman/Regression_Tests_collection.json \
+                     -e automatedtesting/postman/Regression_Tests_Environment.json.json \
+                     --reporters cli,junit \
+                     --reporter-junit-export log/newman/regressionTestReport.xml \
+                     --suppress-exit-code
+        displayName: Regression Test
+      - bash: |
+          newman run automatedtesting/postman/Validation_Tests_collection.json \
+                     -e automatedtesting/postman/Validation_Tests_Environment.json \
+                     --reporters cli,junit \
+                     --reporter-junit-export log/newman/validationTestReport.xml \
+                     --suppress-exit-code
+        displayName: Validation Test
 
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Regression and Validation Test Reports as Artifacts
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/log/newman'
+          artifactName: 'drop-integration-test'
+      - task: PublishTestResults@2
+        displayName: Publish Regression and Validation Test Reports
+        condition: always()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/*.xml'
+          mergeTestResults: true
+          testRunTitle: 'Regression and Validation Test Reports'
+    - deployment: UITest
+      displayName: UITest
+      environment:
+        name:  'TEST'
+        resourceType: VirtualMachine
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - script: |
+                unzip -o $(Pipeline.Workspace)/selenium/selenium-tests.zip -d .
+                sudo mkdir -p /var/log/selenium
+                sudo chmod 664 /var/log/selenium
 
+                sudo python3 -u ui_Tests.py 2>&1 | sudo tee -a /var/log/selenium/ui-test.log
+                # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
+                cd $(System.DefaultWorkingDirectory)
+                mkdir -p log/selenium
+                pwd
+                sudo cp /var/log/selenium/ui-test.log log/selenium/ui-test.log
+                ls -la
+              displayName: Run UI Tests
+            - task: PublishPipelineArtifact@1
+              displayName: Publish UI Test Logs
+              inputs:
+                targetPath: '$(System.DefaultWorkingDirectory)/log/selenium/ui-test.log'
+                artifactName: 'drop-ui-logs'
 
+    - job: PerformanceTest
+      steps:
+      - task: JMeterInstaller@0
+        displayName: Install JMeter 5.4.3
+        inputs:
+          jmeterVersion: '5.4.3'
+      - bash: |
+          apache-jmeter-5.4/bin/jmeter -n -t jmeter/stress_test_suit.jmx \
+                                       -l log/jmeter/stress-test-results.csv \
+                                       -e -f -o log/jmeter/stress-test-report \
+                                       -j log/jmeter/stress-test.log
+        displayName: JMeter stress test
+      - bash: |
+          apache-jmeter-5.4/bin/jmeter -n -t jmeter/endurance_test_suit.jmx \
+                                       -l log/jmeter/endurance-test-results.csv \
+                                       -e -f -o log/jmeter/endurance-test-report \
+                                       -j log/jmeter/endurance-test.log
+        displayName: JMeter endurance test
 
-
-
-
-
-
-
-
-
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Performance Test Logs
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/log/jmeter'
+          ArtifactName: 'drop-performance-test'
