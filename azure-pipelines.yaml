@@ -67,7 +67,7 @@ stages:
           provider: 'azurerm'
           command: 'plan'
           commandOptions: |
-            -auto-approve
+            -input=false
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
           environmentServiceNameAzureRM: $(serviceConnections)
 
