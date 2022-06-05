@@ -17,5 +17,5 @@ variable address_space {}
 # VM
 variable "admin_username" {}
 variable "admin_password" {}
-variable "packer_image" {}
+#variable "packer_image" {}
 variable "public_key_path" {}

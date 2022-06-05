@@ -64,7 +64,7 @@ module "vm" {
   source               = "./modules/vm"
   name                 = "vm-for-test"
   location             = "${var.location}"
-  packer_image         = "${var.packer_image}"
+  #packer_image         = "${var.packer_image}"
   public_key_path      = "${var.public_key_path}"
   application_type     = "${var.application_type}"
   resource_group       = "${var.resource_group}"
