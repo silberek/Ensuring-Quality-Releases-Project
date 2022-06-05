@@ -20,4 +20,4 @@ admin_username = "Kulfonik"
 admin_password = "jakiesSobieHaslo123)"
 
 # public key
-public_key_path = file("/home/vsts/work/_temp/id_rsa.pub")
+public_key_path = "~/.ssh/id_rsa.pub"
