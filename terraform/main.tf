@@ -21,11 +21,7 @@ terraform {
     access_key           = "DXTPQKM5Fj0C04Mq8VIefZXlIxJ3feT5nPTAIug+xMiNs0+sHs87nhLJWbilh4nik/GDpRml46tm+ASt+e/IEw=="
   }
 }
-module "resource_group" {
-  source               = "./modules/resource_group"
-  resource_group       = "${var.resource_group}"
-  location             = "${var.location}"
-}
+
 module "network" {
   source               = "./modules/network"
   address_space        = "${var.address_space}"
