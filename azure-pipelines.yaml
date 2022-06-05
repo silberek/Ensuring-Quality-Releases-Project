@@ -80,22 +80,6 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
           environmentServiceNameAzureRM: 'Ensuring Quality Releases Project'
 
-#      - task: AzureCLI@1
-#        inputs:
-##          azureSubscription: 'sp-20210511'
-#          scriptLocation: 'inlineScript'
-#          inlineScript: 'terraform version'
-#        displayName: "Terraform Version"
-#      - script: |
-#          cd $(System.DefaultWorkingDirectory)/terraform
-#          echo '#####################Terraform Init#####################'
-#          terraform init
-#          echo '#####################Terraform Plan#####################'
-#          terraform plan -out="out.plan"
-#          echo '#####################Terraform Apply#####################'
-#          terraform apply out.plan
-#        displayName: 'Terraform Init, Plan and Apply'
-
 - stage: Build
   jobs:
   - job: Build
@@ -145,9 +129,9 @@ stages:
           - task: AzureWebApp@1
             inputs:
               azureSubscription: $(serviceConnections)
-              appType: webApp
+              appType: 'webApp'
               WebAppName: 'kulfon-AppService'
-              package: $(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip
+              package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'
               deploymentMethod: 'auto'
 
   - deployment: VMDeploy
