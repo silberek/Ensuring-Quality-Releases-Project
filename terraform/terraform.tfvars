@@ -16,8 +16,8 @@ address_prefix_test = "10.5.1.0/24"
 
 # VM
 packer_image = "/subscriptions/8b3d7883-6059-460e-9a47-6837e9097e9c/resourceGroups/RG-myPackerImage/providers/Microsoft.Compute/images/myPackerImage"
-admin_username = "kulfon"
-admin_password = "kulfon123"
+admin_username = "Kulfonik"
+admin_password = "jakiesSobieHaslo123)"
 
 # public key
-public_key_path = "~/.ssh/id_rsa.pub"
+public_key_path = file("/home/vsts/work/_temp/id_rsa.pub")
