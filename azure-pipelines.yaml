@@ -46,9 +46,9 @@ stages:
           provider: 'azurerm'
           command: 'init'
           backendServiceArm: $(serviceConnections)
-          backendAzureRmResourceGroupName: 'tstate'
-          backendAzureRmStorageAccountName: 'tstate27459'
-          backendAzureRmContainerName: 'tstate'
+          backendAzureRmResourceGroupName: 'tstate2'
+          backendAzureRmStorageAccountName: 'tstate20985'
+          backendAzureRmContainerName: 'tstate2'
           backendAzureRmKey: 'terraform.tfstate'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
 
@@ -76,7 +76,7 @@ stages:
           provider: 'azurerm'
           command: 'apply'
           commandOptions: |
-            -auto-approve 
+            -auto-approve
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
           environmentServiceNameAzureRM: 'Ensuring Quality Releases Project'
 

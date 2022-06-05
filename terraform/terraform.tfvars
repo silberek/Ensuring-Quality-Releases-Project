@@ -6,7 +6,7 @@ tenant_id = "7004b1e4-3d39-4385-81f4-3d786fcaf887"
 
 # Resource Group/Location
 location = "westeurope"
-resource_group = "tstate"
+resource_group = "tstate2"
 application_type = "kulfon"
 
 # Network
