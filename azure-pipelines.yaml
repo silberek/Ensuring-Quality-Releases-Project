@@ -195,6 +195,7 @@ stages:
           testResultsFiles: '$(System.DefaultWorkingDirectory)/log/newman/*.xml'
           mergeTestResults: true
           testRunTitle: 'Regression and Validation Test Reports'
+
     - deployment: UITest
       displayName: UITest
       environment:
@@ -205,7 +206,7 @@ stages:
           deploy:
             steps:
             - script: |
-                unzip -o $(Pipeline.Workspace)/selenium/selenium-tests.zip -d .
+                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests.zip -d .
                 sudo mkdir -p /var/log/selenium
                 sudo chmod 664 /var/log/selenium
 
@@ -225,10 +226,18 @@ stages:
 
     - job: PerformanceTest
       steps:
-      - task: JMeterInstaller@0
-        displayName: Install JMeter 5.4.3
-        inputs:
-          jmeterVersion: '5.4.3'
+      - bash: |
+          sudo apt-get install openjdk-11-jre-headless -y
+          java -version
+          wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.tgz -O jmeter.tgz
+          tar xzvf jmeter.tgz
+          mkdir -p log/jmeter
+        displayName: Install JMeter
+
+      #- task: JMeterInstaller@0
+      #  displayName: Install JMeter 5.4.3
+      #  inputs:
+      #    jmeterVersion: '5.4.3'
       - bash: |
           apache-jmeter-5.4.3/bin/jmeter -n -t jmeter/stress_test_suit.jmx \
                                        -l log/jmeter/stress-test-results.csv \
