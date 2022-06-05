@@ -129,7 +129,7 @@ stages:
           - task: AzureWebApp@1
             inputs:
               azureSubscription: $(serviceConnections)
-              appType: 'webApp'
+              appType: 'webAppLinux'
               appName: 'kulfon-AppService'
               package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'
               deploymentMethod: 'auto'
