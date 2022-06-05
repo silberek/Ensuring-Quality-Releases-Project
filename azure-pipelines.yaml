@@ -66,8 +66,6 @@ stages:
         inputs:
           provider: 'azurerm'
           command: 'plan'
-          commandOptions: |
-            -input=false -lock=false 
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
           environmentServiceNameAzureRM: $(serviceConnections)
 
@@ -78,7 +76,7 @@ stages:
           provider: 'azurerm'
           command: 'apply'
           commandOptions: |
-            -auto-approve -lock=false
+            -auto-approve 
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
           environmentServiceNameAzureRM: 'Ensuring Quality Releases Project'
 
