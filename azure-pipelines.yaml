@@ -130,7 +130,7 @@ stages:
             inputs:
               azureSubscription: $(serviceConnections)
               appType: 'webApp'
-              WebAppName: 'kulfon-AppService'
+              appName: 'kulfon-AppService'
               package: '$(Pipeline.Workspace)/drop-fakerestapi/$(Build.BuildId)-fakerestapi.zip'
               deploymentMethod: 'auto'
 
