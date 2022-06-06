@@ -155,7 +155,7 @@ stages:
                 python3 -V
                 pip3 -V
                 echo $PATH
-                export PATH=$PATH:chromedriver
+                export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
                 echo $PATH
                 /usr/bin/chromium-browser --version
                 /usr/bin/chromedriver --version
