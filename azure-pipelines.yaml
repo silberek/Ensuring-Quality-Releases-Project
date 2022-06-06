@@ -151,17 +151,12 @@ stages:
                 sudo apt-get install python3-pip -y
                 sudo apt-get install unzip -y
                 sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
+                python3 -m pip install --upgrade pip
                 pip3 install selenium
                 
-                # download chrome driver v89
-                FILE=chromedriver_linux64.zip
-                if [ -f "$FILE" ]; then
-                  echo "$FILE exists."
-                else
-                  wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
-                fi
-                # install chrome driver
+                # download and install chrome driver v89
+                sudo rm -rf chromedriver*
+                wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
                 unzip chromedriver_linux64.zip
                 sudo mv chromedriver /usr/bin/chromedriver
                 sudo chown root:root /usr/bin/chromedriver
