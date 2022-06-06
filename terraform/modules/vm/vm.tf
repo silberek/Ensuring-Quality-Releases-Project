@@ -22,6 +22,16 @@ resource "azurerm_linux_virtual_machine" "test" {
   disable_password_authentication = false
   network_interface_ids           = [azurerm_network_interface.test.id]
 
+  admin_ssh_key {
+  username   = var.admin_username
+  #Local ssh deployment
+  #public_key = file("~/.ssh/id_rsa.pub")?
+  #Azure ssh deployment Ubuntu
+  public_key = file("/home/vsts/work/_temp/id_rsa.pub")
+  #Azure ssh deployment Windows
+  #public_key = file("D:/a/_temp/id_rsa")
+  }
+
   os_disk {
     caching           = "ReadWrite"
     storage_account_type = "Standard_LRS"

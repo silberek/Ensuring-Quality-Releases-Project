@@ -7,7 +7,6 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.by import By
 
 
-
 def timestamp():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -69,7 +68,7 @@ if __name__ == "__main__":
     # driver = webdriver.Chrome(executable_path='C:\webdrivers\chromedriver.exe')
 
     url = 'https://www.saucedemo.com/'
-    n_products =6
+    n_products = 6
     user = 'standard_user'
     password = 'secret_sauce'
 
