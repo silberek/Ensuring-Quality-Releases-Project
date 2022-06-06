@@ -154,6 +154,9 @@ stages:
                 pip3 install selenium
                 python3 -V
                 pip3 -V
+                echo $PATH
+                export PATH=$PATH:chromedriver
+                echo $PATH
                 /usr/bin/chromium-browser --version
                 /usr/bin/chromedriver --version
                 python3 -c "import selenium; print('Selenium Version:', selenium.__version__)"
