@@ -220,7 +220,7 @@ stages:
           deploy:
             steps:
             - script: |
-                unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
+                unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d
                 sudo python3 -u ui_Test.py 2>&1 | sudo tee -a ui-test.log
                 cat ui-test.log
               displayName: Run UI Tests
