@@ -152,8 +152,6 @@ stages:
                 sudo apt-get install -y chromium-chromedriver
                 python3 -m pip install --upgrade pip
                 pip3 install selenium
-                unzip chromedriver_linux64.zip
-                sudo mv chromedriver /usr/bin/chromedriver
                 python3 -V
                 pip3 -V
                 /usr/bin/chromium-browser --version
@@ -214,7 +212,7 @@ stages:
           deploy:
             steps:
             - script: |
-                unzip -o $(Pipeline.Workspace)/selenium/$(Build.BuildId)-selenium-tests.zip -d .
+                unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 sudo mkdir -p /var/log/selenium
                 sudo chmod 664 /var/log/selenium
 
