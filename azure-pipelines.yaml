@@ -239,13 +239,13 @@ stages:
       #  inputs:
       #    jmeterVersion: '5.4.3'
       - bash: |
-          apache-jmeter-5.4.3/bin/jmeter -n -t jmeter/stress_test_suit.jmx \
+          apache-jmeter-5.4/bin/jmeter -n -t jmeter/stress_test_suit.jmx \
                                        -l log/jmeter/stress-test-results.csv \
                                        -e -f -o log/jmeter/stress-test-report \
                                        -j log/jmeter/stress-test.log
         displayName: JMeter stress test
       - bash: |
-          apache-jmeter-5.4.3/bin/jmeter -n -t jmeter/endurance_test_suit.jmx \
+          apache-jmeter-5.4/bin/jmeter -n -t jmeter/endurance_test_suit.jmx \
                                        -l log/jmeter/endurance-test-results.csv \
                                        -e -f -o log/jmeter/endurance-test-report \
                                        -j log/jmeter/endurance-test.log
