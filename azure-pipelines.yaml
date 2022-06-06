@@ -213,10 +213,9 @@ stages:
             steps:
             - script: |
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
-                sudo mkdir -p /var/log/selenium
-                sudo chmod 664 /var/log/selenium
-
-                sudo python3 -u ui_Tests.py 2>&1 | sudo tee -a /var/log/selenium/ui-test.log
+                mkdir -p /var/log/selenium
+                
+                sudo python3 -u ui_Test.py 2>&1 | sudo tee -a /var/log/selenium/ui-test.log
                 # copy selenium log file to $(System.DefaultWorkingDirectory)/log/selenium/
                 cd $(System.DefaultWorkingDirectory)
                 mkdir -p log/selenium
