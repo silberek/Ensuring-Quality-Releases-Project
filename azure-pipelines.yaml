@@ -139,35 +139,57 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: |
-                #! /bin/bash
-                
-                sudo apt-get update
-                sudo apt-get install software-properties-common -y
-                sudo apt-add-repository universe -y
-                sudo apt-get upgrade -y
-                sudo apt-get install python3-pip unzip expect -y
-                sudo apt-get install -y chromium-browser
-                sudo apt-get install -y chromium-chromedriver
-                python3 -m pip install --upgrade pip
-                pip3 install selenium
-              
-                chromium-browser -version
-                chromedriver --version
-                python3 -V
-                pip3 -V
-                # echo $PATH
-                # export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
-                # echo $PATH
-                /usr/bin/chromium-browser --version
-                /usr/bin/chromedriver --version
-                python3 -c "import selenium; print('Selenium Version:', selenium.__version__)"
-                # agent log analytics
-                # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ba2f2875-7939-40f7-8fab-9fdfe5774935 -s rb9iiVdW/SUHbVCH4V83NX16EgaXKTEtX7WfGSxykJ3iCaZ/Tm/FFqigsvOAUajQZM0L5k9vAnyM3lD4Iv61cw==
-                # sudo /opt/microsoft/omsagent/bin/service_control restart ba2f2875-7939-40f7-8fab-9fdfe5774935
+          - bash: |
+              pwd
+              hostname
+              uname -a
+              cat /etc/*-release
+              sudo apt-get install software-properties-common -y
+              sudo apt-add-repository universe -y
+              sudo apt-get update -y
+              sudo apt-get install python3-pip -y
+              sudo apt-get install unzip -y
+              sudo apt-get install -y chromium-browser
+              sudo apt-get install -y chromium-chromedriver
+              python3 -m pip install --upgrade pip
+              pip3 install selenium
+              python3 -V
+              pip3 -V
+              /usr/bin/chromium-browser --version
+              /usr/bin/chromedriver --version
+              python3 -c "import selenium; print('Selenium Version:', selenium.__version__)"
+          displayName: Configure selenium
+          #- task: Bash@3
+          #  displayName: Configure selenium
+          #  inputs:
+          #    targetType: 'inline'
+          #    workingDirectory: '/home/udacity/'
+          #    script: |
+          #      #! /bin/bash
+          #
+          #      sudo apt-get update
+          #      sudo apt-get upgrade -y
+          #      sudo apt-get install python3-pip unzip expect -y
+          #      sudo apt-get install -y chromium-browser
+          #      python3 -m pip install --upgrade pip
+          #      pip3 install selenium
+          #
+          #      sudo rm -rf chromedriver*
+          #      chromium-browser -version
+          #      chromedriver --version
+          #      python3 -V
+          #      pip3 -V
+          #
+          #      wget https://chromedriver.storage.googleapis.com/96.0.4664.18/chromedriver_linux64.zip
+          #      unzip chromedriver*.zip
+          #      sudo mv chromedriver -f /usr/bin
+          #
+          #      /usr/bin/chromium-browser --version
+          #      /usr/bin/chromedriver --version
+          #      python3 -c "import selenium; print('Selenium Version:', selenium.__version__)"
+          #      # agent log analytics
+          #      # wget https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh && sh onboard_agent.sh -w ba2f2875-7939-40f7-8fab-9fdfe5774935 -s rb9iiVdW/SUHbVCH4V83NX16EgaXKTEtX7WfGSxykJ3iCaZ/Tm/FFqigsvOAUajQZM0L5k9vAnyM3lD4Iv61cw==
+          #      # sudo /opt/microsoft/omsagent/bin/service_control restart ba2f2875-7939-40f7-8fab-9fdfe5774935
 
 - stage: Test
   jobs:
@@ -211,7 +233,7 @@ stages:
           testRunTitle: 'Regression and Validation Test Reports'
 
     - deployment: UITest
-      displayName: UITest
+      displayName: UI Test
       environment:
         name:  'TEST'
         resourceType: VirtualMachine
