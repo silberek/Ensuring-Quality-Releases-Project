@@ -10,6 +10,6 @@ variable "subnet_id" {}
 
 # VM
 variable "admin_username" {}
-variable "admin_password" {}
+#variable "admin_password" {}
 #variable "packer_image" {}
 variable "public_key_path" {}
