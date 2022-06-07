@@ -62,6 +62,7 @@ if __name__ == "__main__":
     # --uncomment when running in Azure DevOps.
     options = ChromeOptions()
     options.add_argument("--headless")
+    options.addArguments("--no-sandbox")
     driver = webdriver.Chrome(options=options)
 
     # driver for local test
