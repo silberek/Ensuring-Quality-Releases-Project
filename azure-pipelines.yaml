@@ -154,14 +154,16 @@ stages:
               /usr/bin/chromium-browser --version
               /usr/bin/chromedriver --version
               python3 -c "import selenium; print('Selenium Version:', selenium.__version__)"
-              FILE=chromedriver_linux64.zip
-              if [ -f "$FILE" ]; then
-                echo "$FILE exists."
-              else
-                wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
-              fi
+              ls -la
+              #FILE=chromedriver_linux64.zip
+              #if [ -f "$FILE" ]; then
+              #  echo "$FILE exists."
+              #else
+              #  wget https://chromedriver.storage.googleapis.com/89.0.4389.23/chromedriver_linux64.zip
+              #fi
               # install chrome driver
-              unzip chromedriver_linux64.zip
+              #unzip chromedriver_linux64.zip
+              
               sudo mv chromedriver /usr/bin/chromedriver
               sudo chown root:root /usr/bin/chromedriver
               sudo chmod +x /usr/bin/chromedriver
@@ -254,9 +256,12 @@ stages:
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
                 ls -la
+                rm chromedriver
+                rm chromedriver_linux64.zip
                 # export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
                 echo $PATH
                 # sudo python3 -u ui_Test.py 2>&1 | sudo tee -a ui-test.log
+                ls -la
                 python3 ui_Test.py > ui-test.log
                 ls -la
                 cat ui-test.log
