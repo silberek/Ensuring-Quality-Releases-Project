@@ -244,12 +244,12 @@ stages:
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
                 ls -la
-                rm chromedriver_linux64.zip
-                sudo mv chromedriver /usr/bin/chromedriver
-                mv chromedriver /usr/bin/chromedriver
-                cd log
+                cd log/selenium
                 ls -la
                 cd ..
+                cd ..
+                export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
+                echo $PATH
                 sudo python3 -u ui_Test.py 2>&1 | sudo tee -a ui-test.log
                 ls -la
                 cat ui-test.log
