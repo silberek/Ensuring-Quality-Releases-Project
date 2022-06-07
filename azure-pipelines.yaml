@@ -163,12 +163,11 @@ stages:
               #fi
               # install chrome driver
               #unzip chromedriver_linux64.zip
-              
-              sudo mv chromedriver /usr/bin/chromedriver
-              sudo chown root:root /usr/bin/chromedriver
-              sudo chmod +x /usr/bin/chromedriver
-              chromium-browser -version
-              chromedriver --version
+              #sudo mv chromedriver /usr/bin/chromedriver
+              #sudo chown root:root /usr/bin/chromedriver
+              #sudo chmod +x /usr/bin/chromedriver
+              #chromium-browser -version
+              #chromedriver --version
 
           #- task: Bash@3
           #  displayName: Configure selenium
