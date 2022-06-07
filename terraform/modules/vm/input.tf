@@ -12,4 +12,4 @@ variable "subnet_id" {}
 variable "admin_username" {}
 #variable "admin_password" {}
 #variable "packer_image" {}
-variable "public_key_path" {}
+# variable "public_key_path" {}
