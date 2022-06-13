@@ -169,7 +169,7 @@ stages:
             displayName: 'Extract Files'
             inputs:
               archiveFilePatterns: '*chromedriver_linux64.zip'
-              destinationFolder: ''
+              destinationFolder: '$(System.DefaultWorkingDirectory)'
               cleanDestinationFolder: false
           - task: Bash@3
             displayName: 'Copy Files to bin'
@@ -242,7 +242,7 @@ stages:
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
                 ls -la
-                export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
+                #export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
                 echo $PATH
                 python3 ui_Test.py > ui-test.log
                 ls -la
