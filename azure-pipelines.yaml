@@ -243,11 +243,10 @@ stages:
             - bash: |
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
-                ls -la
                 #export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
                 #echo $PATH
                 ls -la
-                rm -rf chromedriver 
+                rm chromedriver 
                 rm chromedriver_linux64.zip.4
                 rm chromedriver_linux64.zip.5
                 rm chromedriver_linux64.zip.3
