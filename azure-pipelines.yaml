@@ -167,28 +167,28 @@ stages:
                   sudo rm -rf chromedriver*
                   ls -la
                   wget "https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip"
-#         - task: ExtractFiles@1
-#           displayName: 'Extract Files'
-#           inputs:
-#             archiveFilePatterns: '*chromedriver_linux64.zip'
-#             destinationFolder: '$(System.DefaultWorkingDirectory)'
-#             cleanDestinationFolder: false
-#         - task: Bash@3
-#           displayName: 'Copy Files to bin'
-#           inputs:
-#             targetType: 'inline'
-#             script: |
-#               #! /bin/bash
-#               sudo cp chromedriver /usr/bin
-#               echo "Completed Copying"
-#         - task: Bash@3
-#           displayName: 'Running Selenium Test'
-#           inputs:
-#             targetType: 'inline'
-#             script: |
-#               #! /bin/bash
-#               #cd /home/adminuser/automatedtesting/selenium
-#               python3 /home/**/automatedtesting/selenium/login.py
+         - task: ExtractFiles@1
+           displayName: 'Extract Files'
+           inputs:
+             archiveFilePatterns: '*chromedriver_linux64.zip'
+             destinationFolder: '$(System.DefaultWorkingDirectory)'
+             cleanDestinationFolder: false
+         - task: Bash@3
+           displayName: 'Copy Files to bin'
+           inputs:
+             targetType: 'inline'
+             script: |
+               #! /bin/bash
+               sudo cp chromedriver /usr/bin
+               echo "Completed Copying"
+         - task: Bash@3
+           displayName: 'Running Selenium Test'
+           inputs:
+             targetType: 'inline'
+             script: |
+               #! /bin/bash
+               #cd /home/adminuser/automatedtesting/selenium
+               python3 /home/**/automatedtesting/selenium/login.py
 
 - stage: Test
   jobs:
@@ -243,18 +243,12 @@ stages:
             - bash: |
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
-                #export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
-                #echo $PATH
+#                export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
+#                echo $PATH
                 ls -la
-                rm chromedriver 
-                rm chromedriver_linux64.zip.4
-                rm chromedriver_linux64.zip.5
-                rm chromedriver_linux64.zip.3
-                rm chromedriver_linux64.zip.2
-                rm chromedriver_linux64.zip.1
-                rm chromedriver_linux64.zip
-                rm chromedriver
-                ls -la
+#                rm chromedriver 
+#                rm chromedriver_linux64.zip
+#                ls -la
                 python3 ui_Test.py > ui-test.log
                 ls -la
                 cat ui-test.log
