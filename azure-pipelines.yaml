@@ -187,8 +187,6 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                #cd /home/adminuser/automatedtesting/selenium
-                #python3 /home/**/automatedtesting/selenium/login.py
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
                 echo $PATH
@@ -196,11 +194,6 @@ stages:
                 python3 ui_Test.py > ui-test.log
                 ls -la
                 cat ui-test.log
-          - task: PublishPipelineArtifact@1
-#              displayName: Publish UI Test Logs
-              inputs:
-                targetPath: '$(System.DefaultWorkingDirectory)/ui-test.log'
-                artifactName: 'drop-ui-logs'
 
 - stage: Test
   jobs:
