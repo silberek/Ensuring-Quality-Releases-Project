@@ -167,6 +167,10 @@ stages:
                   sudo rm -rf chromedriver*
                   ls -la
                   wget "https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip"
+          - bash: |
+              ls -la
+              sudo rm -rf chromedriver*
+              ls -la
           - task: ExtractFiles@1
             displayName: 'Extract Files'
             inputs:
