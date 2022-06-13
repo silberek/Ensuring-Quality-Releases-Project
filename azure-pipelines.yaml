@@ -243,12 +243,8 @@ stages:
             - bash: |
                 unzip -o $(Pipeline.Workspace)/drop-selenium-tests/$(Build.BuildId)-selenium-tests.zip -d .
                 pwd
-#                export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
-#                echo $PATH
+                echo $PATH
                 ls -la
-#                rm chromedriver 
-#                rm chromedriver_linux64.zip
-#                ls -la
                 python3 ui_Test.py > ui-test.log
                 ls -la
                 cat ui-test.log
