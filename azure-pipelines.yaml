@@ -197,7 +197,7 @@ stages:
                 ls -la
                 cat ui-test.log
           - task: PublishPipelineArtifact@1
-              displayName: Publish UI Test Logs
+#              displayName: Publish UI Test Logs
               inputs:
                 targetPath: '$(System.DefaultWorkingDirectory)/ui-test.log'
                 artifactName: 'drop-ui-logs'
