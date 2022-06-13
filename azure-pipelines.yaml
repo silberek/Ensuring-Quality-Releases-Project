@@ -167,6 +167,9 @@ stages:
                   rm chromedriver*
                   ls -la
                   wget "https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip"
+                  pwd
+                  echo $PATH
+                  ls -la
           - task: ExtractFiles@1
             displayName: 'Extract Files'
             inputs:
@@ -180,6 +183,9 @@ stages:
               script: |
                 #! /bin/bash
                 sudo cp chromedriver /usr/bin
+                pwd
+                echo $PATH
+                ls -la
                 echo "Completed Copying"
           - task: Bash@3
             displayName: 'Running Selenium Test'
