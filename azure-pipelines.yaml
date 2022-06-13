@@ -179,7 +179,7 @@ stages:
               targetType: 'inline'
               script: |
                 #! /bin/bash
-                cp chromedriver /usr/bin
+                sudo cp chromedriver /usr/bin
                 echo "Completed Copying"
           - task: Bash@3
             displayName: 'Running Selenium Test'

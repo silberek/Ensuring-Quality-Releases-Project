@@ -15,7 +15,7 @@ resource "azurerm_linux_virtual_machine" "test" {
   name                            = "${var.application_type}-VM"
   location                        = var.location
   resource_group_name             = var.resource_group
-  size                            = "Standard_B2s"
+  size                            = "Standard_B1s"
   admin_username                  = var.admin_username
   #admin_password                  = var.admin_password
   #source_image_id                 = var.packer_image
