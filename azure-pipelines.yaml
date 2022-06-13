@@ -165,28 +165,28 @@ stages:
                   pip3 install selenium
                   sudo rm -rf chromedriver*
                   wget "https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip"
-            - task: ExtractFiles@1
-              displayName: 'Extract Files'
-              inputs:
-                archiveFilePatterns: '*chromedriver_linux64.zip'
-                destinationFolder: ''
-                cleanDestinationFolder: false
-            - task: Bash@3
-              displayName: 'Copy Files to bin'
-              inputs:
-                targetType: 'inline'
-                script: |
-                  #! /bin/bash
-                  sudo cp chromedriver /usr/bin
-                  echo "Completed Copying"
-            - task: Bash@3
-              displayName: 'Running Selenium Test'
-              inputs:
-                targetType: 'inline'
-                script: |
-                  #! /bin/bash    
-                  #cd /home/adminuser/automatedtesting/selenium 
-                  python3 /home/**/automatedtesting/selenium/login.py  
+          - task: ExtractFiles@1
+            displayName: 'Extract Files'
+            inputs:
+              archiveFilePatterns: '*chromedriver_linux64.zip'
+              destinationFolder: ''
+              cleanDestinationFolder: false
+          - task: Bash@3
+            displayName: 'Copy Files to bin'
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash
+                sudo cp chromedriver /usr/bin
+                echo "Completed Copying"
+          - task: Bash@3
+            displayName: 'Running Selenium Test'
+            inputs:
+              targetType: 'inline'
+              script: |
+                #! /bin/bash    
+                #cd /home/adminuser/automatedtesting/selenium 
+                python3 /home/**/automatedtesting/selenium/login.py  
 
 - stage: Test
   jobs:
