@@ -247,7 +247,14 @@ stages:
                 #export PATH=$PATH:$(System.DefaultWorkingDirectory)/chromedriver
                 #echo $PATH
                 ls -la
-                sudo rm -rf chromedriver*
+                rm -rf chromedriver 
+                rm chromedriver_linux64.zip.4
+                rm chromedriver_linux64.zip.5
+                rm chromedriver_linux64.zip.3
+                rm chromedriver_linux64.zip.2
+                rm chromedriver_linux64.zip.1
+                rm chromedriver_linux64.zip
+                rm chromedriver
                 ls -la
                 python3 ui_Test.py > ui-test.log
                 ls -la
